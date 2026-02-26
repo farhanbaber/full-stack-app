@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './App.css';
 
+// 1. Live Backend ka link yahan rakh rahe hain
+const API_URL = "https://full-stack-app-production-63d7.up.railway.app";
+
 function App() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -9,31 +12,42 @@ function App() {
   const [list, setList] = useState([]);
 
 const handleRegister = async () => {
-  console.log("Button Dab Gaya!"); // Ye line add karo
+  console.log("Register Button Dab Gaya!");
   try {
-    const res = await axios.post("http://localhost:5000/register", { email, password });
+    // ✅ Localhost ki jagah API_URL use kiya
+    const res = await axios.post(`${API_URL}/register`, { email, password });
     console.log("Response aya:", res.data);
     alert("User Registered!");
   } catch (err) {
     console.error("Masla agaya:", err);
+    alert("Registration failed! Logs check karein.");
   }
 };
 
   const handleAddTodo = async () => {
-    // App.jsx mein ye URL bilkul sahi hona chahiye
-await axios.post("http://localhost:5000/register", { email, password });
-    setList([...list, todo]);
-    setTodo('');
+    try {
+      // ✅ Localhost ki jagah API_URL use kiya
+      await axios.post(`${API_URL}/add-todo`, { email, todo }); 
+      setList([...list, todo]);
+      setTodo('');
+    } catch (err) {
+      console.error("Add Todo Error:", err);
+    }
   };
 
   const handleDelete = async (item) => {
-    await axios.post('http://localhost:5000/delete-todo', { email, todo: item });
-    setList(list.filter(t => t !== item));
+    try {
+      // ✅ Localhost ki jagah API_URL use kiya
+      await axios.post(`${API_URL}/delete-todo`, { email, todo: item });
+      setList(list.filter(t => t !== item));
+    } catch (err) {
+      console.error("Delete Error:", err);
+    }
   };
 
   return (
     <div className="App">
-      <h1>Modern To-Do (MERN)</h1>
+      <h1>Modern To-Do (MERN) - Live</h1>
       <div className="auth">
         <input placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
         <input placeholder="Password" type="password" onChange={(e) => setPassword(e.target.value)} />
